@@ -29,16 +29,16 @@ import { useMapInfo } from '@hooks/useMapInfo';
 import { convertMapInfoToTree } from '@utils/MapInfoUtils';
 import {
   getMapTreeCountChildren,
-  getMapTreeSourceDepth,
+  getTreeSourceDepth,
   mapTreeConvertItemToMapInfoValue,
   mapTreeConvertTreeToMapInfo,
   renderDropBox,
-  getMapTreeDestinationDepth,
+  getTreeDestinationDepth,
   getMapTreeItemDepth,
-  searchIsUnderOpenFolder,
 } from '@utils/MapTreeUtils';
 import { MapListContainer, TreeItemContainer } from './style';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { searchIsUnderOpenFolder } from '../../../tree/Tree/Tree-utils';
 
 type MapTreeComponentProps = {
   treeScrollbarRef: RefObject<HTMLDivElement>;
@@ -153,7 +153,7 @@ export const MapTreeComponent = ({ treeScrollbarRef }: MapTreeComponentProps) =>
     const countChildren = isFolder ? getMapTreeCountChildren(tree, item) : undefined;
     const isDeleted = item.data.klass === 'MapInfoMap' && !maps[item.data.mapDbSymbol];
     const currentDepth = getMapTreeItemDepth(tree, item);
-    const isUnderOpenFolder = searchIsUnderOpenFolder(tree, item);
+    const isUnderOpenFolder = searchIsUnderOpenFolder(tree, item, 'MapInfoMap');
 
     renderDropBox(snapshot.combineWith, treeRef);
 
@@ -255,8 +255,8 @@ export const MapTreeComponent = ({ treeScrollbarRef }: MapTreeComponentProps) =>
     if (currentItem.data?.klass === 'MapInfoFolder' && destination.parentId !== 0) return;
 
     // We can only drop a map if the depth < 5
-    const destinationDepth = getMapTreeDestinationDepth(tree, destination);
-    const sourceDepth = getMapTreeSourceDepth(tree, currentItem);
+    const destinationDepth = getTreeDestinationDepth(tree, destination);
+    const sourceDepth = getTreeSourceDepth(tree, currentItem);
     if (destinationDepth + sourceDepth > 4) return;
 
     const newTree = moveItemOnTree(tree, source, destination);
@@ -305,7 +305,7 @@ export const MapTreeComponent = ({ treeScrollbarRef }: MapTreeComponentProps) =>
             isDeleted={mapInfoSelected.data.klass === 'MapInfoMap' && !maps[mapInfoSelected.data.mapDbSymbol]}
             enableRename={() => setCanRename(mapInfoSelected.id)}
             dialogsRef={dialogsRef}
-          />
+          />,
         )}
       <MapEditorOverlay mapInfoValue={mapInfoSelected} ref={dialogsRef} />
     </MapListContainer>
