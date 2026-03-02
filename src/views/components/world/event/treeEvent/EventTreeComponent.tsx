@@ -37,11 +37,7 @@ type EventTreeComponentProps = {
 };
 
 export const EventTreeComponent = ({ treeScrollbarRef }: EventTreeComponentProps) => {
-  const {
-    selectedDataIdentifier: currentEvent,
-    setSelectedDataIdentifier: setEvent,
-    projectDataValues: events,
-  } = useProjectEvents();
+  const { selectedDataIdentifier: currentEvent, setSelectedDataIdentifier: setEvent, projectDataValues: events } = useProjectEvents();
   const { eventTree, setEventTree } = useEventTree();
   const setText = useSetProjectText();
   const getEventName = useGetEntityNameText();
@@ -271,7 +267,7 @@ export const EventTreeComponent = ({ treeScrollbarRef }: EventTreeComponentProps
     setEventTree(convertTreeToEventTree(newTree.items));
   };
 
-  // Check if there are no maps in the tree (only root folder exists)
+  // Check if there are no events in the tree (only root folder exists)
   const hasNoEvent = tree.items[0] && tree.items[0].children.length === 0;
 
   return (

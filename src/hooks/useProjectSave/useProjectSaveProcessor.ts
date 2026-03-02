@@ -25,7 +25,7 @@ export const useProjectSaveProcessor = () => {
   const mapOptions = useSelectOptions('maps');
   const isMapsToSave = useMemo(
     () => isMapsToSaveFunc(globalState),
-    [globalState.savingData.map, globalState.savingMapInfo, globalState.savingText.map]
+    [globalState.savingData.map, globalState.savingMapInfo, globalState.savingText.map],
   );
   const isDataToSave =
     globalState.savingData.map.size > 0 ||
@@ -47,7 +47,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveProjectData(
           { path: state.projectPath, data: globalState.savingData.getSavingData(globalState.projectData) },
           () => setState({ ...state, state: 'saveConfigs' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveConfigs: (state, setState) => {
@@ -57,7 +57,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveProjectConfigs(
           { path: state.projectPath, configs: globalState.savingConfig.getSavingConfig(globalState.projectConfig) },
           () => setState({ ...state, state: 'saveTexts' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveTexts: (state, setState) => {
@@ -67,7 +67,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveProjectTexts(
           { path: state.projectPath, texts: globalState.savingText.getSavingText(globalState.projectText) },
           () => setState({ ...state, state: 'saveTextInfo' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveTextInfo: (state, setState) => {
@@ -77,7 +77,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveTextInfos(
           { projectPath: state.projectPath, textInfos: JSON.stringify(globalState.textInfos, null, 2) },
           () => setState({ ...state, state: 'saveMapInfo' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveMapInfo: (state, setState) => {
@@ -87,13 +87,13 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveMapInfo(
           { projectPath: state.projectPath, mapInfo: JSON.stringify(globalState.mapInfo, null, 2) },
           () => setState({ ...state, state: 'saveRMXPMapInfo' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveRMXPMapInfo: (state, setState) => {
         loaderRef.current.setProgress(6, STEPS_TOTAL, t('saving_rmxp_map_info'));
         if (!globalState.savingMapInfo || globalState.projectStudio.isTiledMode !== true) {
-          return toAsyncProcess(() => setState({ ...state, state: 'saveEventTree' }));
+          return toAsyncProcess(() => setState({ ...state, state: 'updateStudioFile' }));
         }
         return window.api.saveRMXPMapInfo(
           {
@@ -104,11 +104,11 @@ export const useProjectSaveProcessor = () => {
                 name: option.label,
                 dbSymbol: option.value,
                 id: globalState.projectData.maps[option.value as DbSymbol].id,
-              }))
+              })),
             ),
           },
           () => setState({ ...state, state: 'saveEventTree' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       saveEventTree: (state, setState) => {
@@ -118,7 +118,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.saveEventTree(
           { projectPath: state.projectPath, eventTree: JSON.stringify(globalState.eventTree, null, 2) },
           () => setState({ ...state, state: 'updateStudioFile' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       updateStudioFile: (state, setState) => {
@@ -128,7 +128,7 @@ export const useProjectSaveProcessor = () => {
         return window.api.projectStudioFile(
           { path: state.projectPath, action: 'UPDATE', data: JSON.stringify(globalState.projectStudio, null, 2) },
           () => setState({ ...state, state: 'updateProjectList' }),
-          handleFailure(setState, binding)
+          handleFailure(setState, binding),
         );
       },
       updateProjectList: (state, setState) => {
@@ -139,7 +139,7 @@ export const useProjectSaveProcessor = () => {
           // Save the selected identifier in locale storage
           localStorage.setItem(
             `selectedDataIdentifier:${window.api.md5(globalState.projectStudio.title)}`,
-            JSON.stringify(globalState.selectedDataIdentifier)
+            JSON.stringify(globalState.selectedDataIdentifier),
           );
           setState({ state: 'resetSaving' });
         });
@@ -160,12 +160,21 @@ export const useProjectSaveProcessor = () => {
             textVersion: 0,
           });
           binding.current.onSuccess({});
+          window.dispatchEvent(new CustomEvent('project-saved'));
           setState(DEFAULT_PROCESS_STATE);
         });
       },
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [globalState, globalState.textVersion, globalState.textInfos, globalState.mapInfo, globalState.eventTree, globalState.projectStudio, globalState.mapsModified]
+    [
+      globalState,
+      globalState.textVersion,
+      globalState.textInfos,
+      globalState.mapInfo,
+      globalState.eventTree,
+      globalState.projectStudio,
+      globalState.mapsModified,
+    ],
   );
 
   return { isDataToSave, isMapsToSave, processors, binding, state: globalState };

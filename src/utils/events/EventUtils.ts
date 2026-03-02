@@ -43,7 +43,12 @@ export const convertTreeToEventTree = (treeData: Record<string | number, TreeIte
   return result;
 };
 
-export const addNewEventToEventTree = (eventTree: StudioEventTree, dbSymbol: DbSymbol, eventId: number, parentDbSymbol?: DbSymbol): StudioEventTree => {
+export const addNewEventToEventTree = (
+  eventTree: StudioEventTree,
+  dbSymbol: DbSymbol,
+  eventId: number,
+  parentDbSymbol?: DbSymbol,
+): StudioEventTree => {
   const cloned = cloneEntity(eventTree);
   const parentKey = parentDbSymbol ?? '0';
   const parent = cloned[parentKey];
@@ -104,12 +109,12 @@ export const removeEventTreeItem = (eventTree: StudioEventTree, dbSymbol: string
 };
 
 export const convertEventToTree = (events: Record<string, StudioEvent>, eventTree: StudioEventTree | undefined): TreeData => {
-  // Si on a déjà un eventTree, on l'utilise directement
+  // If u had an eventTree, use it already
   if (eventTree && Object.keys(eventTree).length > 1) {
     return convertEventTreeToTree(eventTree);
   }
 
-  // Fallback : construction depuis events
+  // Fallback : builds event tree
   const items: Record<ItemId, TreeItem> = {
     0: {
       id: 0,
