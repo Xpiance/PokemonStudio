@@ -93,7 +93,7 @@ export const useProjectSaveProcessor = () => {
       saveRMXPMapInfo: (state, setState) => {
         loaderRef.current.setProgress(6, STEPS_TOTAL, t('saving_rmxp_map_info'));
         if (!globalState.savingMapInfo || globalState.projectStudio.isTiledMode !== true) {
-          return toAsyncProcess(() => setState({ ...state, state: 'updateStudioFile' }));
+          return toAsyncProcess(() => setState({ ...state, state: 'saveEventTree' }));
         }
         return window.api.saveRMXPMapInfo(
           {
