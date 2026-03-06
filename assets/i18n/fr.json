@@ -1845,5 +1845,6 @@
   "event_command_complete_quest_helper": "Valide la complétion d'une quête, distribue ses récompenses et annonce sa fin",
   "add_base_for_events": "Ajout des éléments de base pour les événements",
   "event_command_comment": "Commentaire",
-  "event_command_script": "Script"
+  "event_command_script": "Script",
+  "invalid_data": "Données invalides"
 }

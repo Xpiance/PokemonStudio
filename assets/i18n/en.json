@@ -1845,5 +1845,6 @@
   "event_command_complete_quest_helper": "Validates quest completion, distributes rewards and announces its end",
   "add_base_for_events": "Adding basic elements for events",
   "event_command_comment": "Comment",
-  "event_command_script": "Script"
+  "event_command_script": "Script",
+  "invalid_data": "Invalid data"
 }
